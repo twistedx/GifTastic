@@ -1,0 +1,9 @@
+form{
+    position: relative;
+    float: right;
+    width: 100%;
+    border: 2px #888 solid;
+}
+#person {
+    width: 100%;
+}
