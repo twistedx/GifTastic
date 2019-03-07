@@ -1,6 +1,6 @@
 
 var favPeople =["Val Kilmer", "Arnold Swartznegger", "Samuel L Jackson", "Elon Musk", "Conor McGreggor", "Jon Bernthal", "Clint Eastwood", "Anson Mount"]
-var firstRun = true
+
 
 
 var addButtons = function () {
@@ -19,21 +19,22 @@ var addButtons = function () {
     }
 }
 
-if (firstRun){
+
 addButtons();
-firstRun = false;
-}
+
+
 $("#add-person").on("click", function(event){
+    
     event.preventDefault();
+
     var person = $("#person").val().trim();
     console.log("Person = " + person);
     favPeople.push(person);
-    console.log(favPeople);
     addButtons();
 
 });
 
-$(".person-btn").on("click", function() {
+$("#buttons").on("click", ".person-btn", function() {
     var person = $(this).attr("data-person");
     console.log(person);
 
@@ -43,10 +44,9 @@ $(".person-btn").on("click", function() {
     $.ajax({
       url: queryURL,
       method: "GET"
-    })
-      .then(function(response) {
+    }).then(function(response) {
         var results = response.data;
-
+        console.log(results);
         for (var i = 0; i < results.length; i++) {
           var gifDiv = $("<div>");
 
@@ -55,14 +55,29 @@ $(".person-btn").on("click", function() {
           var p = $("<p>").text("Rating: " + rating);
 
           var personImage = $("<img>");
-          personImage.attr("src", results[i].images.fixed_height.url);
-
+          personImage.attr("data-animate", results[i].images.fixed_height.url);
+          personImage.attr("src", results[i].images.fixed_height_still.url);  
+          personImage.attr("data-still", results[i].images.fixed_height_still.url);
+          personImage.attr("data-state", "still");
+          personImage.addClass("gif");
           gifDiv.prepend(p);
           gifDiv.prepend(personImage);
-
           $("#gifs-appear-here").prepend(gifDiv);
+
         }
       });
    
   });
+
+$(document.body).on("click", ".gif" ,function () {
+    console.log("clicked worked");
+    var state = $(this).attr("data-state");
+    if (state === "still") {
+        $(this).attr("data-state", "animate");
+        $(this).attr('src', $(this).attr("data-animate"));
+    } else {
+        $(this).attr("data-state", "still");
+        $(this).attr('src', $(this).attr("data-still"));
+    }
+});
 
